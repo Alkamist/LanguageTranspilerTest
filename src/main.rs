@@ -35,6 +35,17 @@ enum RustInstruction {
         counter_name: String,
         instructions: Vec<RustInstruction>,
     },
+    IfStatement {
+        condition: String,
+        instructions: Vec<RustInstruction>,
+    },
+    ElseStatement {
+        instructions: Vec<RustInstruction>,
+    },
+    ElseIfStatement {
+        condition: String,
+        instructions: Vec<RustInstruction>,
+    },
 }
 
 impl RustInstruction {
@@ -179,7 +190,76 @@ impl RustInstruction {
                 output.push_str("}\n");
 
                 output
-            }
+            },
+
+            Self::IfStatement {
+                condition,
+                instructions,
+                } => {
+
+                let indentation = indentation_level * indentation_spaces;
+
+                let mut output = String::new();
+                add_indentation(&mut output, indentation);
+
+                output.push_str("if ");
+                output.push_str(condition);
+                output.push_str(" {\n");
+
+                for instruction in instructions.iter() {
+                    output.push_str(&instruction.get_string(indentation_level + 1, indentation_spaces));
+                }
+
+                add_indentation(&mut output, indentation);
+                output.push_str("}\n");
+
+                output
+            },
+
+            Self::ElseStatement {
+                instructions,
+                } => {
+
+                let indentation = indentation_level * indentation_spaces;
+
+                let mut output = String::new();
+                add_indentation(&mut output, indentation);
+
+                output.push_str("else {\n");
+
+                for instruction in instructions.iter() {
+                    output.push_str(&instruction.get_string(indentation_level + 1, indentation_spaces));
+                }
+
+                add_indentation(&mut output, indentation);
+                output.push_str("}\n");
+
+                output
+            },
+
+            Self::ElseIfStatement {
+                condition,
+                instructions,
+                } => {
+
+                let indentation = indentation_level * indentation_spaces;
+
+                let mut output = String::new();
+                add_indentation(&mut output, indentation);
+
+                output.push_str("else if ");
+                output.push_str(condition);
+                output.push_str(" {\n");
+
+                for instruction in instructions.iter() {
+                    output.push_str(&instruction.get_string(indentation_level + 1, indentation_spaces));
+                }
+
+                add_indentation(&mut output, indentation);
+                output.push_str("}\n");
+
+                output
+            },
         }
     }
 }
@@ -212,6 +292,25 @@ fn main() -> std::io::Result<()> {
                     name: "x".to_string(),
                     value: "10.0".to_string()
                 },
+                RustInstruction::VariableDefinition {
+                    is_mutable: true,
+                    name: "y".to_string(),
+                    value: "10.0".to_string()
+                },
+                RustInstruction::EmptyLine,
+                RustInstruction::FunctionDefinition {
+                    is_public: false,
+                    name: "subtract_numbers".to_string(),
+                    argument_names: vec!["x".to_string(), "y".to_string()],
+                    argument_types: vec!["f64".to_string(), "f64".to_string()],
+                    return_type: "f64".to_string(),
+                    instructions: vec![
+                        RustInstruction::ReturnStatement {
+                            is_final: true,
+                            value: "x - y".to_string()
+                        },
+                    ],
+                },
                 RustInstruction::EmptyLine,
                 RustInstruction::Loop {
                     count: "10".to_string(),
@@ -222,9 +321,34 @@ fn main() -> std::io::Result<()> {
                             counter_name: "j".to_string(),
                             instructions: vec![
                                 RustInstruction::VariableAssignment { name: "x".to_string(), value: "add_numbers(x, 1)".to_string() },
+                                RustInstruction::VariableAssignment { name: "y".to_string(), value: "subtract_numbers(x, 1)".to_string() },
                             ]
                         }
                     ]
+                },
+                RustInstruction::EmptyLine,
+                RustInstruction::VariableDefinition {
+                    is_mutable: true,
+                    name: "z".to_string(),
+                    value: "5".to_string()
+                },
+                RustInstruction::EmptyLine,
+                RustInstruction::IfStatement {
+                    condition: "z == 5".to_string(),
+                    instructions: vec![
+                        RustInstruction::VariableAssignment { name: "x".to_string(), value: "5.0".to_string() },
+                    ],
+                },
+                RustInstruction::ElseIfStatement {
+                    condition: "z == 3".to_string(),
+                    instructions: vec![
+                        RustInstruction::VariableAssignment { name: "x".to_string(), value: "3.0".to_string() },
+                    ],
+                },
+                RustInstruction::ElseStatement {
+                    instructions: vec![
+                        RustInstruction::VariableAssignment { name: "x".to_string(), value: "10.0".to_string() },
+                    ],
                 },
             ],
         },
