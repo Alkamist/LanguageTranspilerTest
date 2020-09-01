@@ -1,23 +1,7 @@
-function addNumbers(x, y)
-    return x + y
 
-function main()
-    let x = 10.0
-    let y = 10.0
 
-    function subtractNumbers(x, y)
-        return x - y
+let x = 10.0
+let y = 10.0
+x = y
+y = x
 
-    for i in 0..10
-        for j in 0..10
-            x = addNumbers(x, 1)
-            y = subtractNumbers(y, 1)
-
-    let z = 5
-
-    if z == 5
-        x = 5.0
-    else if z == 3
-        x = 3.0
-    else
-        x = 10.0
