@@ -1,0 +1,9 @@
+function addNumbers(x, y)
+    return x + y
+
+function main()
+    let x = 10.0
+
+    for i in 0..10
+        for j in 0..10
+            x = addNumbers(x, 1)

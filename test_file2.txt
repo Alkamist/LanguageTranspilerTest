@@ -1,0 +1,9 @@
+class Vector
+    member x 4.0
+    member y 2.0
+
+    function magnitude()
+        return (x.pow(2) + y.pow(2)).sqrt()
+
+let testVector = Vector()
+print(testVector.magnitude())

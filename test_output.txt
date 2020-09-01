@@ -1,0 +1,13 @@
+fn add_numbers(x: f64, y: f64) -> f64 {
+    x + y
+}
+
+fn main() {
+    let mut x = 10.0;
+
+    for i in 0..10 {
+        for j in 0..10 {
+            x = add_numbers(x, 1);
+        }
+    }
+}
