@@ -1,0 +1,12 @@
+function addNumbers(x, y) { return x + y; }
+
+function main() {
+    var aFloat = 5.0;
+    var anInt = 10;
+
+    var aFloatAnswer = addNumbers(aFloat, aFloat);
+    var anIntAnswer = addNumbers(anInt, anInt);
+
+    aFloatAnswer = 10.0;
+    anInt = 5;
+}

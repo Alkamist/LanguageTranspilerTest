@@ -1,18 +1,18 @@
 //mod rust_writing;
+mod common;
+mod float_literal;
+mod variable_definition;
+mod function_definition;
 mod custom_language_parsing;
 
 //use std::fs;
 
 //use crate::rust_writing::*;
-use crate::custom_language_parsing::Parser;
+use crate::custom_language_parsing::parse_program;
 
 
 fn main() {
-    let mut parser = Parser::new();
-    parser.read_file("test_file.txt");
-    parser.parse_program_text();
-    //parser.asdfasdf();
-    //parser.print_debug_message();
+    parse_program("test_file.txt");
 }
 
 //fn main() -> std::io::Result<()> {

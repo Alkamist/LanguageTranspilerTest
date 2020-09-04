@@ -1,12 +1,8 @@
-function addNumbers(x, y)
-    return x + y
 
-function main()
-    var aFloat = 5.0
-    var anInt = 10
+var x = 5.0 + 1.0 \
+        + 4.0
 
-    var aFloatAnswer = addNumbers(aFloat, aFloat)
-    var anIntAnswer = addNumbers(anInt, anInt)
+var y = 10.0
 
-    aFloatAnswer = 10.0
-    anInt = 5
+var z = x + y
+
