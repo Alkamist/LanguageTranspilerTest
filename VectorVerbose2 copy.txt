@@ -1,0 +1,47 @@
+get magnitude(self)
+    (self.x.pow(2) + self.y.pow(2)).sqrt
+
+set magnitude(self, value)
+    let magnitude = self.magnitude
+    if magnitude != 0.0
+        let scaleFactor = value / magnitude
+        self.x *= scaleFactor
+        self.y *= scaleFactor
+
+get angle(self)
+    if self.x != 0.0 or self.y != 0.0
+        self.y.arctan2(self.x)
+    else
+        0.0
+
+get direction(self)
+    var output = self.clone
+    output.magnitude = 1.0
+    output
+
+fn angleWith(self, other)
+    (self.x * other.y - self.y * other.x)
+    .arctan2(self.x * other.x + self.y * other.y)
+
+fn dot(self, other)
+    self.x * other.x + self.y * other.y
+
+fn invert(self)
+    self.x = -self.x
+    self.y = -self.y
+
+fn rotate(rotation)
+    let rotationCos = rotation.cos
+    let rotationSin = rotation.sin
+    let newX = self.x * rotationCos - self.y * rotationSin
+    let newY = self.x * rotationSin + self.y * rotationCos
+    self.x = newX
+    self.y = newY
+
+fn main()
+    let test = {
+        x: 10.0,
+        y: 10.0,
+    }
+
+    print(test.magnitude)

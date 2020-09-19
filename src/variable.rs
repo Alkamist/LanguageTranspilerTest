@@ -1,4 +1,5 @@
 use crate::instruction::*;
+use crate::expression::*;
 
 #[derive(Debug)]
 pub enum VariableType {
@@ -28,26 +29,26 @@ pub enum VariableType {
 impl VariableType {
     pub fn from_str(type_str: &str) -> Self {
         match type_str {
-            "float" => Self::Float64,
-            "int" => Self::Int32,
+            "Float" => Self::Float64,
+            "Int" => Self::Int32,
 
-            "i8" => Self::Int8,
-            "i16" => Self::Int16,
-            "i32" => Self::Int32,
-            "i64" => Self::Int64,
-            "i128" => Self::Int128,
+            "Int8" => Self::Int8,
+            "Int16" => Self::Int16,
+            "Int32" => Self::Int32,
+            "Int64" => Self::Int64,
+            "Int128" => Self::Int128,
 
-            "u8" => Self::UInt8,
-            "u16" => Self::UInt16,
-            "u32" => Self::UInt32,
-            "u64" => Self::UInt64,
-            "u128" => Self::UInt128,
+            "UInt8" => Self::UInt8,
+            "UInt16" => Self::UInt16,
+            "UInt32" => Self::UInt32,
+            "UInt64" => Self::UInt64,
+            "UInt128" => Self::UInt128,
 
-            "size" => Self::Size,
-            "usize" => Self::USize,
+            "Size" => Self::Size,
+            "USize" => Self::USize,
 
-            "f32" => Self::Float32,
-            "f64" => Self::Float64,
+            "Float32" => Self::Float32,
+            "Float64" => Self::Float64,
 
             _ => Self::Custom(type_str.to_string())
         }
@@ -82,7 +83,7 @@ impl VariableType {
 
 pub struct VariableDefinition {
     pub name: String,
-    pub value: String,
+    pub value: Expression,
     pub value_type: VariableType,
     pub is_mutable: bool,
     pub infer_type: bool,
@@ -90,7 +91,7 @@ pub struct VariableDefinition {
 
 impl Instruction for VariableDefinition {
     fn to_rust(&self) -> String {
-        let mut output = String::with_capacity(30);
+        let mut output = String::new();
         output.push_str("let ");
 
         if self.is_mutable {
@@ -105,24 +106,27 @@ impl Instruction for VariableDefinition {
         }
 
         output.push_str(" = ");
-        output.push_str(&self.value);
+        output.push_str(&self.value.to_rust());
         output.push_str(";");
+
         output
     }
 }
 
 pub struct VariableAssignment {
     pub name: String,
-    pub value: String,
+    pub value: Expression,
 }
 
 impl Instruction for VariableAssignment {
     fn to_rust(&self) -> String {
-        let mut output = String::with_capacity(25);
+        let mut output = String::new();
+
         output.push_str(&self.name);
         output.push_str(" = ");
-        output.push_str(&self.value);
+        output.push_str(&self.value.to_rust());
         output.push_str(";");
+
         output
     }
 }

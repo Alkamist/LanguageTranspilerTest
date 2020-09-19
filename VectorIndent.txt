@@ -1,0 +1,43 @@
+class Vector
+    var x = 0.0
+    var y = 0.0
+
+    get magnitude() -> Float
+        (self.x.pow(2) + self.y.pow(2)).sqrt
+
+    set magnitude(value: Float)
+        let magnitude = self.magnitude
+        if magnitude != 0.0
+            let scaleFactor = value / magnitude
+            self.x *= scaleFactor
+            self.y *= scaleFactor
+
+    get angle() -> Float
+        if self.x != 0.0 or self.y != 0.0
+            self.y.arctan2(self.x)
+        else
+            0.0
+
+    get direction() -> Float
+        var output = self.clone
+        output.magnitude = 1.0
+        output
+
+    fn angleWithVector(otherVector: Vector) -> Float
+        (self.x * otherVector.y - self.y * otherVector.x)
+        .arctan2(self.x * otherVector.x + self.y * otherVector.y)
+
+    fn dot(otherVector: Vector) -> Float
+        self.x * otherVector.x + self.y * otherVector.y
+
+    fn invert()
+        self.x = -self.x
+        self.y = -self.y
+
+    fn rotate(rotation: Float)
+        let rotationCos = rotation.cos
+        let rotationSin = rotation.sin
+        let newX = self.x * rotationCos - self.y * rotationSin
+        let newY = self.x * rotationSin + self.y * rotationCos
+        self.x = newX
+        self.y = newY

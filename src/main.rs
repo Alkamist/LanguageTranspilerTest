@@ -1,30 +1,31 @@
-mod instruction;
-mod variable;
-mod function;
-mod parsers;
+//mod instruction;
+//mod expression;
+mod operator;
+//mod literal;
+//mod variable;
+//mod function;
+//mod parsers;
 
 use std::fs;
 
-use crate::parsers::test_parse;
+//use nom::{
+//    IResult,
+//    branch::alt,
+//};
 
-fn indented(input: &str, spaces: usize) -> String {
-    let mut output = input.to_string();
-    for _ in 0..spaces {
-        output.push(' ');
-    }
-    output
-}
+//use crate::instruction::*;
+//use crate::literal::*;
+use crate::operator::*;
 
 fn main() {
     let file_text = fs::read_to_string("test_file.txt").unwrap();
 
-    match test_parse(&file_text) {
-        Ok(res) => {
-            for instruction in res.1 {
-                instruction.to_rust();
-                println!("{}", instruction.to_rust());
-            }
-        },
-        Err(e) => println!("{}", e),
-    }
+    let res = Expr::parse(&file_text).unwrap();
+    println!("{}", res.1.to_rust());
+
+    //match addition(&file_text) {
+    //    //Ok(res) => println!("{}", res.1.to_rust()),
+    //    Ok(res) => (),
+    //    Err(e) => println!("{}", e),
+    //}
 }

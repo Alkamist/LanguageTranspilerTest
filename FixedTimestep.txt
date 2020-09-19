@@ -1,0 +1,21 @@
+import time.Duration
+
+class FixedTimestep
+    var interpolation = 0.0
+    var fixedDelta = Duration()
+    var accumulator = Duration()
+
+    get fixedFps() -> Float
+        1.0 / self.fixedDelta.toSeconds
+
+    set fixedFps(value: Float)
+        self.fixedDelta = Duration.fromSeconds(1.0 / value)
+
+    fn update(delta: Duration, updateFn: Fn)
+        self.accumulator += delta
+
+        while self.accumulator >= self.fixedDelta
+            updateFn()
+            self.accumulator -= self.fixedDelta
+
+        self.interpolation = self.accumulator.toSeconds / self.fixedDelta.toSeconds

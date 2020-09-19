@@ -1,17 +1,18 @@
 use crate::instruction::*;
+use crate::expression::*;
 use crate::variable::VariableType;
 
 pub struct FunctionArgument {
-    name: String,
-    value_type: VariableType,
-    is_self: bool,
-    is_reference: bool,
-    is_mutable: bool,
+    pub name: String,
+    pub value_type: VariableType,
+    pub is_self: bool,
+    pub is_reference: bool,
+    pub is_mutable: bool,
 }
 
 impl Instruction for FunctionArgument {
     fn to_rust(&self) -> String {
-        let mut output = String::with_capacity(25);
+        let mut output = String::new();
 
         if self.is_self {
             if self.is_reference {
@@ -42,16 +43,16 @@ impl Instruction for FunctionArgument {
 }
 
 pub struct FunctionDefinition {
-    name: String,
-    arguments: String,
-    body: String,
-    return_type: Option<String>,
-    is_public: bool,
+    pub name: String,
+    pub arguments: Vec<FunctionArgument>,
+    pub body: Expression,
+    pub return_type: Option<VariableType>,
+    pub is_public: bool,
 }
 
 impl Instruction for FunctionDefinition {
     fn to_rust(&self) -> String {
-        let mut output = String::with_capacity(40);
+        let mut output = String::new();
 
         if self.is_public {
             output.push_str("pub ");
@@ -60,17 +61,24 @@ impl Instruction for FunctionDefinition {
         output.push_str("fn ");
         output.push_str(&self.name);
         output.push_str("(");
-        output.push_str(&self.arguments);
+
+        let num_arguments = self.arguments.len();
+        for (argument_id, argument) in self.arguments.iter().enumerate() {
+            output.push_str(&argument.to_rust());
+            if argument_id < num_arguments - 1 {
+                output.push_str(", ");
+            }
+        }
+
         output.push_str(")");
 
         if let Some(return_type) = &self.return_type {
             output.push_str(" -> ");
-            output.push_str(return_type);
+            output.push_str(&return_type.to_rust());
         }
 
-        output.push_str(" {\n");
-        output.push_str(&self.body);
-        output.push_str("}\n");
+        output.push_str(" ");
+        output.push_str(&self.body.to_rust());
 
         output
     }
