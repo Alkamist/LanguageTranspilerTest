@@ -1,31 +1,19 @@
-//mod instruction;
-//mod expression;
-mod operator;
-//mod literal;
-//mod variable;
-//mod function;
-//mod parsers;
+mod instruction;
+mod expression;
+mod grouping_expression;
+mod literal_expression;
+mod binary_expression;
 
 use std::fs;
 
-//use nom::{
-//    IResult,
-//    branch::alt,
-//};
-
-//use crate::instruction::*;
-//use crate::literal::*;
-use crate::operator::*;
+use crate::instruction::*;
+use crate::expression::*;
 
 fn main() {
     let file_text = fs::read_to_string("test_file.txt").unwrap();
 
-    let res = Expr::parse(&file_text).unwrap();
-    println!("{}", res.1.to_rust());
-
-    //match addition(&file_text) {
-    //    //Ok(res) => println!("{}", res.1.to_rust()),
-    //    Ok(res) => (),
-    //    Err(e) => println!("{}", e),
-    //}
+    match Expression::parse(&file_text) {
+        Ok(res) => println!("{}", res.1.to_rust()),
+        Err(e) => println!("{}", e),
+    }
 }

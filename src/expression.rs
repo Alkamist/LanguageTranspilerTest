@@ -1,79 +1,44 @@
 use nom::{
     IResult,
-    character::complete::{
-        space1,
-        multispace0,
-    },
-    sequence::{
-        preceded,
-    },
-    combinator::{
-        map,
-    },
-    multi::{
-        separated_list,
-    },
-    branch::alt,
+    character::complete::*,
+    bytes::complete::*,
+    combinator::*,
+    sequence::*,
+    multi::*,
+    branch::*,
 };
 
 use crate::instruction::*;
-use crate::literal::*;
-use crate::operator::*;
+use crate::grouping_expression::*;
+use crate::literal_expression::*;
+use crate::binary_expression::*;
 
-pub struct Expression {
-    pub indentation_level: u32,
-    pub indentation_spaces: u32,
-    pub body: Vec<Box<dyn Instruction>>,
+#[derive(Debug)]
+pub enum Expression {
+    //Unary(UnaryExpression),
+    Binary(BinaryExpression),
+    Grouping(GroupingExpression),
+    Literal(LiteralExpression),
 }
 
 impl Instruction for Expression {
     fn to_rust(&self) -> String {
-        let mut output = String::new();
-        //output.push_str("{\n");
-
-        //let spaces = (self.indentation_level + 1) * self.indentation_spaces;
-        for instruction in &self.body {
-            //for _ in 0..spaces {
-            //    output.push(' ');
-            //}
-            output.push_str(&instruction.to_rust());
-            //output.push_str(";\n");
+        match self {
+            //Expression::Unary(value) => value.to_rust(),
+            Expression::Binary(value) => value.to_rust(),
+            Expression::Grouping(value) => value.to_rust(),
+            Expression::Literal(value) => value.to_rust(),
         }
-
-        //let spaces = (self.indentation_level) * self.indentation_spaces;
-        //for _ in 0..spaces {
-        //    output.push(' ');
-        //}
-
-        //output.push_str("}\n");
-
-        output
     }
 }
 
 impl Expression {
     pub fn parse(input: &str) -> IResult<&str, Self> {
-        //let (remain, res) = separated_list(
-        //    space1,
-        //    alt((
-        //        map(Addition::parse, |value| Box::new(value) as Box<dyn Instruction>),
-        //        map(Literal::parse, |value| Box::new(value) as Box<dyn Instruction>),
-        //    ))
-        //)(input)?;
-
-        //let (remain, res) = alt((
-        //    map(Addition::parse, |value| Box::new(value) as Box<dyn Instruction>),
-        //    map(Literal::parse, |value| Box::new(value) as Box<dyn Instruction>),
-        //))(input)?;
-
-        let (remain, res) = parse_addition(input)?;
-
-        let res = vec![res];
-
-        Ok((remain, Self {
-            indentation_level: 0,
-            indentation_spaces: 4,
-            body: res,
-        }))
+        alt((
+            preceded(multispace0, BinaryExpression::parse),
+            preceded(multispace0, GroupingExpression::parse),
+            preceded(multispace0, LiteralExpression::parse),
+            //preceded(multispace0, UnaryExpr::parse),
+        ))(input)
     }
 }

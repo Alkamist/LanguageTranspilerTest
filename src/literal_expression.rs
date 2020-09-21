@@ -1,27 +1,15 @@
 use nom::{
     IResult,
-    character::complete::{
-        char,
-        one_of,
-    },
-    combinator::{
-        recognize,
-        opt,
-        map,
-    },
-    sequence::{
-        tuple,
-        terminated,
-        preceded,
-    },
-    multi::{
-        many0,
-        many1,
-    },
-    branch::alt,
+    character::complete::*,
+    bytes::complete::*,
+    combinator::*,
+    sequence::*,
+    multi::*,
+    branch::*,
 };
 
 use crate::instruction::*;
+use crate::expression::*;
 
 pub fn decimal_integer(input: &str) -> IResult<&str, &str> {
     recognize(
@@ -69,23 +57,29 @@ pub fn decimal_float(input: &str) -> IResult<&str, &str> {
     ))(input)
 }
 
-//pub enum Literal {
-//    Float(f64)
-//}
-//
-//impl Instruction for Literal {
-//    fn to_rust(&self) -> String {
-//        match self {
-//            Literal::Float(value) => value.to_string(),
-//        }
-//    }
-//}
-//
-//impl Literal {
-//    pub fn parse(input: &str) -> IResult<&str, Self> {
-//        map(
-//            decimal_float,
-//            |value| Literal::Float(value.parse::<f64>().unwrap())
-//        )(input)
-//    }
-//}
+#[derive(Debug)]
+pub enum LiteralExpression {
+    Float(String)
+}
+
+impl Instruction for LiteralExpression {
+    fn to_rust(&self) -> String {
+        let mut output = String::new();
+
+        match self {
+            LiteralExpression::Float(value) => output.push_str(&value.to_string()),
+        }
+
+        output
+    }
+}
+
+impl LiteralExpression {
+    pub fn parse(input: &str) -> IResult<&str, Expression> {
+        let (remainder, value) = decimal_float(input)?;
+        Ok((
+            remainder,
+            Expression::Literal(Self::Float(value.to_string()))
+        ))
+    }
+}
